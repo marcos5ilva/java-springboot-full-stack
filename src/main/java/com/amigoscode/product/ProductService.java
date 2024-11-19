@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -14,12 +16,15 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductResponse> getAllProducts() {
+        return productRepository.findAll().stream()
+                .map(mapToResponse())
+                .collect(Collectors.toList());
     }
 
-    public Product getProductById(UUID id) {
+    public ProductResponse getProductById(UUID id) {
         return productRepository.findById(id)
+                .map(mapToResponse())
                 .orElseThrow(() -> new ResourceNotFound(
                         "product with id [" + id + "] not found"
                 ));
@@ -48,4 +53,19 @@ public class ProductService {
         productRepository.save(newProduct);
         return id;
     }
+
+    private Function<Product, ProductResponse> mapToResponse() {
+        return p -> new ProductResponse(
+                p.getId(),
+                p.getName(),
+                p.getDescription(),
+                p.getPrice(),
+                p.getImageUrl(),
+                p.getStockLevel(),
+                p.getCreatedAt(),
+                p.getUpdatedAt(),
+                p.getDeletedAt()
+        );
+    }
+
 }
