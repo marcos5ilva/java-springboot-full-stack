@@ -2,6 +2,9 @@ package com.amigoscode.product;
 
 import com.amigoscode.exception.ResourceNotFound;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.UUID;
@@ -68,4 +71,30 @@ public class ProductService {
         );
     }
 
+
+    public void updateProduct(UUID id,
+                              UpdateProductRequest updateRequest) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound(
+                        "product with id [" + id + "] not found"
+                ));
+
+        if (updateRequest.name() != null && !updateRequest.name().equals(product.getName())) {
+            product.setName(updateRequest.name());
+        }
+        if (updateRequest.description() != null && !updateRequest.description().equals(product.getDescription())) {
+            product.setDescription(updateRequest.description());
+        }
+        if (updateRequest.price() != null && !updateRequest.price().equals(product.getPrice())) {
+            product.setPrice(updateRequest.price());
+        }
+        if (updateRequest.imageUrl() != null && !updateRequest.imageUrl().equals(product.getImageUrl())) {
+            product.setImageUrl(updateRequest.imageUrl());
+        }
+        if (updateRequest.stockLevel() != null && !updateRequest.stockLevel().equals(product.getStockLevel())) {
+            product.setStockLevel(updateRequest.stockLevel());
+        }
+
+        productRepository.save(product);
+    }
 }

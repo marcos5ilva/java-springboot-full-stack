@@ -37,7 +37,8 @@ public class Product {
 
     private Instant deletedAt;
 
-    public Product() {}
+    public Product() {
+    }
 
     public Product(UUID id,
                    String name,
@@ -54,8 +55,8 @@ public class Product {
     }
 
     @PrePersist
-    public void prePersist(){
-        if(this.id == null) {
+    public void prePersist() {
+        if (this.id == null) {
             this.id = UUID.randomUUID();
         }
         this.createdAt = Instant.now();
@@ -63,7 +64,7 @@ public class Product {
     }
 
     @PreUpdate
-    public void preUpdate(){
+    public void preUpdate() {
         this.updatedAt = Instant.now();
     }
 
