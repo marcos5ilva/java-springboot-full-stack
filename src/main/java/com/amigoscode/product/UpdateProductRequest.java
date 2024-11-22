@@ -28,6 +28,8 @@ public record UpdateProductRequest(
         BigDecimal price,
 
         @Min(value = 1, message = "Min Stock Level is 1")
-        Integer stockLevel
+        Integer stockLevel,
+
+        Boolean isPublished
 ) {
 }
