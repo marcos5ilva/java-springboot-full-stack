@@ -38,6 +38,8 @@ public class Product {
 
     private Instant deletedAt;
 
+    private Boolean isPublished = true;
+
     public Product() {
     }
 
@@ -141,11 +143,19 @@ public class Product {
         this.deletedAt = deletedAt;
     }
 
+    public Boolean getPublished() {
+        return isPublished;
+    }
+
+    public void setPublished(Boolean published) {
+        isPublished = published;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return stockLevel == product.stockLevel && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(description, product.description) && Objects.equals(price, product.price) && Objects.equals(imageUrl, product.imageUrl) && Objects.equals(createdAt, product.createdAt) && Objects.equals(updatedAt, product.updatedAt) && Objects.equals(deletedAt, product.deletedAt);
+        return Objects.equals(stockLevel, product.stockLevel) && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(description, product.description) && Objects.equals(price, product.price) && Objects.equals(imageUrl, product.imageUrl) && Objects.equals(createdAt, product.createdAt) && Objects.equals(updatedAt, product.updatedAt) && Objects.equals(deletedAt, product.deletedAt);
     }
 
     @Override

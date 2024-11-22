@@ -21,15 +21,26 @@ public class Main {
     public CommandLineRunner commandLineRunner(
             ProductRepository productRepository) {
         return args -> {
-            Product product = new Product();
-            product.setName("Macbook Pro");
-            product.setDescription("Macbook Pro M4");
-            product.setPrice(new BigDecimal(3000));
-            product.setId(UUID.fromString(
+            Product product1 = new Product();
+            product1.setName("Macbook Pro");
+            product1.setDescription("Macbook Pro M4");
+            product1.setPrice(new BigDecimal(3000));
+            product1.setId(UUID.fromString(
                     "d95062e6-9f0b-4224-bc9d-d0723949848f")
             );
-            product.setStockLevel(100);
-            productRepository.save(product);
+            product1.setStockLevel(100);
+            productRepository.save(product1);
+
+            Product product2 = new Product();
+            product2.setId(UUID.fromString(
+                    "94d2cc8a-ad09-4902-a321-a6bf658e2463"
+            ));
+            product2.setName("Mouse");
+            product2.setDescription("LG Mouse");
+            product2.setPrice(new BigDecimal(78));
+            product2.setStockLevel(1000);
+
+            productRepository.save(product2);
         };
     }
 
