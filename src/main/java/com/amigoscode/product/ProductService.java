@@ -2,9 +2,6 @@ package com.amigoscode.product;
 
 import com.amigoscode.exception.ResourceNotFound;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +54,7 @@ public class ProductService {
         return id;
     }
 
-    private Function<Product, ProductResponse> mapToResponse() {
+    Function<Product, ProductResponse> mapToResponse() {
         return p -> new ProductResponse(
                 p.getId(),
                 p.getName(),
