@@ -11,7 +11,7 @@ public record ProductResponse(
         BigDecimal price,
         String imageUrl,
         Integer stockLevel,
-        Instant createdAt,
+        boolean isPublished, Instant createdAt,
         Instant updatedAt,
         Instant deletedAt
 ) {

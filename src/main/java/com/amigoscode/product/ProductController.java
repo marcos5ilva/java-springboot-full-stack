@@ -1,7 +1,7 @@
 package com.amigoscode.product;
 
 import jakarta.validation.Valid;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +33,7 @@ public class ProductController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public UUID saveProduct(@RequestBody @Valid NewProductRequest product) {
         return productService.saveNewProduct(product);
     }

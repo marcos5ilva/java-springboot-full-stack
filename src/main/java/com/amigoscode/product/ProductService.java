@@ -62,6 +62,7 @@ public class ProductService {
                 p.getPrice(),
                 p.getImageUrl(),
                 p.getStockLevel(),
+                p.getPublished(),
                 p.getCreatedAt(),
                 p.getUpdatedAt(),
                 p.getDeletedAt()
