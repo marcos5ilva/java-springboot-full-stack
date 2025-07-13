@@ -44,10 +44,7 @@ jobs:
 
       - name: Build and push Docker image with Jib
         run: |
-          ./mvnw -B -ntp \ 
-            clean \
-            verify \
-            jib:build \
+          ./mvnw -B -ntp clean verify jib:build \
             -Ddocker.image.tag=$BUILD_NUMBER 
 
       - name: Set up SSH key
