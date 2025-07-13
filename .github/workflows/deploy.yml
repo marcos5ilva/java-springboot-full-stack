@@ -1,0 +1,51 @@
+name: Build and Deploy Java Docker Image
+
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate build number
+        id: buildnumber
+        run: |
+          BUILD_NUMBER=$(date +'%d%m%Y%H%M%S')
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
+          echo "Generated build number: $BUILD_NUMBER"
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build and push Docker image with Jib
+        run: |
+          ./mvnw clean verify jib:build \
+            -Ddocker.image.tag=$BUILD_NUMBER \
+            -Ddocker.username=${{ secrets.DOCKER_USERNAME }} \
+            -Ddocker.password=${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Deploy on EC2 with Docker Compose
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << EOF
+            cd /home/ubuntu/app
+          
+            # Update docker-compose.yml to use the new image tag
+            sed -i 's|image: .*$|image: ${{ secrets.DOCKER_USERNAME }}/myapp:$BUILD_NUMBER|' docker-compose.yml
+          
+            docker-compose pull
+            docker-compose up -d
+            docker image prune -f
+          EOF
