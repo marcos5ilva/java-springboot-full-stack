@@ -30,7 +30,7 @@ jobs:
           ./mvnw clean verify -ntp -B jib:build \
             -Ddocker.image.tag=$BUILD_NUMBER \
             -Ddocker.username=amigoscode
-            -Ddocker.password={{ secrets.DOCKER_PASSWORD }}
+            -Ddocker.password=${{ secrets.DOCKER_PASSWORD }}
 
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.9.0
