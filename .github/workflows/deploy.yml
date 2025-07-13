@@ -47,7 +47,7 @@ jobs:
             cd /home/ec2-user
           
             # Update docker-compose.yml to use the new image tag
-            sed -i 's|image: .*$|image: ${{ secrets.DOCKER_USERNAME }}/myapp:$BUILD_NUMBER|' docker-compose.yml
+            sed -i 's|image: .*$|image: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:$BUILD_NUMBER|' docker-compose.yml
           
             docker-compose pull
             docker-compose up -d
