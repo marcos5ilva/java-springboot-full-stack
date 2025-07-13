@@ -44,7 +44,7 @@ jobs:
       - name: Deploy on EC2 with Docker Compose
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << EOF
-            cd /home/ubuntu/app
+            cd /home/ec2-user
           
             # Update docker-compose.yml to use the new image tag
             sed -i 's|image: .*$|image: ${{ secrets.DOCKER_USERNAME }}/myapp:$BUILD_NUMBER|' docker-compose.yml
