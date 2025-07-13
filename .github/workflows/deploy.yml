@@ -1,12 +1,20 @@
 name: Build and Deploy Java Docker Image
 
 on:
-  pull_request:
+  push:
     branches:
       - main
+
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_IMAGE_NAME: ${{ secrets.DOCKER_IMAGE_NAME }}
+      EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+      EC2_HOST: ${{ secrets.EC2_HOST }}
 
     steps:
       - name: Checkout code
@@ -28,29 +36,29 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image with Jib
         run: |
-          ./mvnw clean verify -ntp -B jib:build \
-            -Ddocker.image.tag=$BUILD_NUMBER 
+          ./mvnw -B -ntp clean verify jib:build \
+            -Ddocker.image.tag=$BUILD_NUMBER \
+            -Ddocker.username=$DOCKER_USERNAME \
+            -Ddocker.password=$DOCKER_PASSWORD
 
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+          ssh-private-key: ${{ env.EC2_SSH_KEY }}
 
       - name: Deploy on EC2 with Docker Compose
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << EOF
-            cd /home/ec2-user
-          
-            # Update docker-compose.yml to use the new image tag
-            sed -i 's|image: .*$|image: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:$BUILD_NUMBER|' docker-compose.yml
-          
+          ssh -o StrictHostKeyChecking=no ec2-user@$EC2_HOST << EOF
+            cd /home/ec2-user/app
+
+            sed -i 's|image: '"$DOCKER_USERNAME"'/'"$DOCKER_IMAGE_NAME"':.*$|image: '"$DOCKER_USERNAME"'/'"$DOCKER_IMAGE_NAME"':'"$BUILD_NUMBER"'|' docker-compose.yml
+
             docker-compose pull
             docker-compose up -d
-            echo $BUILD_NUMBER > version
             docker image prune -f
           EOF
