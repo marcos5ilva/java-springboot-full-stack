@@ -51,5 +51,6 @@ jobs:
           
             docker-compose pull
             docker-compose up -d
+            echo $BUILD_NUMBER > version
             docker image prune -f
           EOF
