@@ -1,7 +1,7 @@
 services:
   product-service:
       container_name: product
-#      image: amigoscode/product-service:jibMaven
+#      image: marcos5ilva/product-service:jibMaven
       build:
         context: .
         dockerfile: Dockerfile
