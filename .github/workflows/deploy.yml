@@ -20,5 +20,4 @@ jobs:
           echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
           echo ¨Generated Build Number: $BUILD_NUMBER"
       - name: Maven Clean and Verify
-        run: mvn -B -ntp clean verify jib:build \
-          -Ddocker.image.tag=1234
+        run: mvn -B -ntp clean verify jib:build -Ddocker.image.tag=$BUILD_NUMBER
